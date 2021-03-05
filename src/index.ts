@@ -18,7 +18,7 @@ let usr: User;
 let memb: GuildMember;
 
 /** DataBase */
-const Cprefixes = new Enmap({
+export const Cprefixes = new Enmap({
 	name: 'prefixes',
 	dataDir: join(__dirname, '..', 'DATABASE'),
 });
@@ -46,8 +46,9 @@ for (const file of commandFiles) {
 /** Loading Listeners */
 const listeners = require('./events');
 listeners.execute(client);
-
-/** Command Handler */
+/* --------------------------------
+Command Handler
+-------------------------------- */
 
 client.on('message', async (message: Message) => {
 	/** Checking Prefix */
@@ -60,24 +61,42 @@ client.on('message', async (message: Message) => {
 	if (message.guild.me.hasPermission('SEND_MESSAGES')) return;
 
 	/** Command defining */
-	command = message.content;
-	if (command.startsWith(settings.prefix)) {
-		command = command.replace(settings.prefix, '');
-	} else if (command.startsWith(`<@${client.user.id}>`)) {
-		command = command.replace(`<@${client.user.id}>`, '');
+
+	if (command.startsWith(`<@!${client.user.id}>`)) {
+		command = command.replace(`<@!${client.user.id}>`, '');
+	} else if (
+		command.startsWith(
+			Cprefixes.get(message.guild.id, 'prefix') || settings.prefix
+		)
+	) {
+		command = command.replace(
+			Cprefixes.get(message.guild.id, 'prefix') || settings.prefix,
+			''
+		);
 	}
+	console.log(command);
+	command = command.replace(/  /, ' ').trim();
+	if (command[0] == ' ') command.slice(1);
+	console.log(command);
 	command = command.split(' ')[0];
 
 	/** Args */
 	let args = message.content.replace(command, '');
 
 	/** Removing Prefix */
-	if (args.startsWith(settings.prefix)) {
-		args = args.replace(settings.prefix, '');
-	} else if (args.startsWith(`<@${client.user.id}>`)) {
-		args = args.replace(`<@${client.user.id}>`, '');
+	if (args.startsWith(`<@!${client.user.id}>`)) {
+		args = args.replace(`<@!${client.user.id}>`, '');
+	} else if (
+		args.startsWith(
+			Cprefixes.get(message.guild.id, 'prefix') || settings.prefix
+		)
+	) {
+		args = args.replace(
+			Cprefixes.get(message.guild.id, 'prefix') || settings.prefix,
+			''
+		);
 	}
-	args = args.replace(' ', '');
+	args = args.trim();
 
 	/** Trying to get members */
 	try {
@@ -101,7 +120,9 @@ client.on('message', async (message: Message) => {
 		console.error;
 	}
 });
-/** Logging in */
+/* --------------------------------
+Logging in
+-------------------------------- */
 client.login(credentials.token);
 
 /* --------------------------------
