@@ -10,19 +10,23 @@ import {
 	User,
 } from 'discord.js-light';
 import Enmap from 'enmap';
-
+/** ----------------------- */
 /** defining stuff */
 const commands = new Collection();
 let command: string;
 let usr: User;
 let memb: GuildMember;
-
+/** ----------------------- */
 /** DataBase */
 export const Cprefixes = new Enmap({
 	name: 'prefixes',
 	dataDir: join(__dirname, '..', 'DATABASE'),
+	polling: false,
+	fetchAll: false,
+	ensureProps: true,
+	autoFetch: true,
 });
-
+/** ----------------------- */
 /** Making the client */
 const client = new Client({
 	cacheGuilds: true,
@@ -31,8 +35,9 @@ const client = new Client({
 	cacheRoles: false,
 	cacheEmojis: false,
 	cachePresences: false,
+	disabledEvents: events(),
 });
-
+/** ----------------------- */
 /** Loading Commands */
 const commandFiles = readdirSync(join(__dirname, 'commands')).filter((file) =>
 	file.endsWith('.js')
@@ -209,4 +214,55 @@ interface CommandInterface {
 		usr: User,
 		memb: GuildMember
 	);
+}
+function events(): string[] {
+	const events = [
+		'channelCreate',
+		'channelDelete',
+		'channelPinsUpdate',
+		'channelUpdate',
+		'debug',
+		'emojiCreate',
+		'emojiDelete',
+		'emojiUpdate',
+		'error',
+		'guildBanAdd',
+		'guildBanRemove',
+		'guildCreate',
+		'guildDelete',
+		'guildIntegrationsUpdate',
+		'guildMemberAdd',
+		'guildMemberAvailable',
+		'guildMemberRemove',
+		'guildMembersChunk',
+		'guildMemberSpeaking',
+		'guildMemberUpdate',
+		'guildUnavailable',
+		'guildUpdate',
+		'invalidated',
+		'inviteCreate',
+		'inviteDelete',
+		'messageDelete',
+		'messageDeleteBulk',
+		'messageReactionAdd',
+		'messageReactionRemove',
+		'messageReactionRemoveAll',
+		'messageReactionRemoveEmoji',
+		'presenceUpdate',
+		'rateLimit',
+		'roleCreate',
+		'roleDelete',
+		'roleUpdate',
+		'shardDisconnect',
+		'shardError',
+		'shardReady',
+		'shardReconnecting',
+		'shardResume',
+		'typingStart',
+		'userUpdate',
+		'voiceStateUpdate',
+		'warn',
+		'webhookUpdate',
+	];
+	return events;
 }
