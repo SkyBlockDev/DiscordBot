@@ -1,10 +1,28 @@
-import { Client, Message } from 'discord.js-light';
+import {
+	Client,
+	Message,
+	User,
+	GuildMember,
+	Guild,
+	TextChannel,
+} from 'discord.js-light';
+
 module.exports = {
 	catagory: 'config',
-	execute(message, client, args, command, usr, memb) {
-		console.log('EEEE');
-		if (command == 'test') {
-			console.log('test');
-		} else console.log('failed');
+	async execute(
+		msg: Message,
+		client: Client,
+		args: string,
+		cmd: string,
+		user: User,
+		member: GuildMember
+	) {
+		const channel = msg.channel as TextChannel;
+		const guild = msg.guild as Guild;
+		if (cmd == 'prefix') {
+			console.log(args);
+		} else {
+			console.log('NOOOOP');
+		}
 	},
 };

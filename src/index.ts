@@ -1,5 +1,5 @@
 /** Imports */
-import { credentials, settings } from './Settings';
+import { credentials, settings, google } from './Settings';
 import { readdirSync } from 'fs';
 import { join } from 'path';
 import {
@@ -9,11 +9,20 @@ import {
 	GuildMember,
 	User,
 } from 'discord.js-light';
+import Enmap from 'enmap';
+
 /** defining stuff */
 const commands = new Collection();
 let command: string;
 let usr: User;
 let memb: GuildMember;
+
+/** DataBase */
+const Cprefixes = new Enmap({
+	name: 'prefixes',
+	dataDir: join(__dirname, '..', 'DATABASE'),
+});
+
 /** Making the client */
 const client = new Client({
 	cacheGuilds: true,
@@ -23,6 +32,7 @@ const client = new Client({
 	cacheEmojis: false,
 	cachePresences: false,
 });
+
 /** Loading Commands */
 const commandFiles = readdirSync(join(__dirname, 'commands')).filter((file) =>
 	file.endsWith('.js')
@@ -32,10 +42,13 @@ for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	commands.set(command?.catagory, command);
 }
+
 /** Loading Listeners */
 const listeners = require('./events');
 listeners.execute(client);
+
 /** Command Handler */
+
 client.on('message', async (message: Message) => {
 	/** Checking Prefix */
 	if (
@@ -45,6 +58,7 @@ client.on('message', async (message: Message) => {
 	)
 		return;
 	if (message.guild.me.hasPermission('SEND_MESSAGES')) return;
+
 	/** Command defining */
 	command = message.content;
 	if (command.startsWith(settings.prefix)) {
@@ -52,6 +66,8 @@ client.on('message', async (message: Message) => {
 	} else if (command.startsWith(`<@${client.user.id}>`)) {
 		command = command.replace(`<@${client.user.id}>`, '');
 	}
+	command = command.split(' ')[0];
+
 	/** Args */
 	let args = message.content.replace(command, '');
 
@@ -61,12 +77,14 @@ client.on('message', async (message: Message) => {
 	} else if (args.startsWith(`<@${client.user.id}>`)) {
 		args = args.replace(`<@${client.user.id}>`, '');
 	}
+	args = args.replace(' ', '');
+
 	/** Trying to get members */
 	try {
 		usr = await GetUser(args, message);
 		memb = await Member(args, message);
 	} catch (e) {}
-
+	/** running the command */
 	try {
 		const cmd = (await commands.get('config')) || null;
 		console.log(command);
@@ -85,6 +103,16 @@ client.on('message', async (message: Message) => {
 });
 /** Logging in */
 client.login(credentials.token);
+
+/* --------------------------------
+Catching Errors
+-------------------------------- */
+process.on('uncaughtException', (error) => {
+	console.log(error.stack);
+});
+process.on('UnhandledPromiseRejectionWarning', (error) => {
+	console.log(error);
+});
 
 /* --------------------------------
 User Code
