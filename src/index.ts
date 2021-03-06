@@ -66,23 +66,18 @@ client.on('message', async (message: Message) => {
 	if (message.guild.me.hasPermission('SEND_MESSAGES')) return;
 
 	/** Command defining */
-
+	let command = message.content;
+	const prefix = Cprefixes.get(message.guild.id, 'prefix')
+		? Cprefixes.get(message.guild.id, 'prefix')
+		: settings.prefix;
+	console.log(prefix);
 	if (command.startsWith(`<@!${client.user.id}>`)) {
 		command = command.replace(`<@!${client.user.id}>`, '');
-	} else if (
-		command.startsWith(
-			Cprefixes.get(message.guild.id, 'prefix') || settings.prefix
-		)
-	) {
-		command = command.replace(
-			Cprefixes.get(message.guild.id, 'prefix') || settings.prefix,
-			''
-		);
+	} else if (command.startsWith(prefix)) {
+		command = command.replace(prefix, '');
 	}
-	console.log(command);
-	command = command.replace(/  /, ' ').trim();
+	command = command?.replace(/  /, ' ')?.trim();
 	if (command[0] == ' ') command.slice(1);
-	console.log(command);
 	command = command.split(' ')[0];
 
 	/** Args */
@@ -91,15 +86,8 @@ client.on('message', async (message: Message) => {
 	/** Removing Prefix */
 	if (args.startsWith(`<@!${client.user.id}>`)) {
 		args = args.replace(`<@!${client.user.id}>`, '');
-	} else if (
-		args.startsWith(
-			Cprefixes.get(message.guild.id, 'prefix') || settings.prefix
-		)
-	) {
-		args = args.replace(
-			Cprefixes.get(message.guild.id, 'prefix') || settings.prefix,
-			''
-		);
+	} else if (args.startsWith(prefix)) {
+		args = args.replace(prefix, '');
 	}
 	args = args.trim();
 
@@ -110,17 +98,23 @@ client.on('message', async (message: Message) => {
 	} catch (e) {}
 	/** running the command */
 	try {
-		const cmd = (await commands.get('config')) || null;
+		const cmds = [
+			await commands.get('config'),
+			await commands.get('dev'),
+			await commands.get('index'),
+			await commands.get('general'),
+		];
 		console.log(command);
-
-		(cmd as CommandInterface).execute(
-			message,
-			client,
-			args,
-			command,
-			usr || null,
-			memb || null
-		);
+		for (let commandFiles of cmds) {
+			(commandFiles as CommandInterface).execute(
+				message,
+				client,
+				args,
+				command,
+				usr || null,
+				memb || null
+			);
+		}
 	} catch (e) {
 		console.error;
 	}
@@ -215,6 +209,9 @@ interface CommandInterface {
 		memb: GuildMember
 	);
 }
+/* --------------------------------
+Events
+-------------------------------- */
 function events(): string[] {
 	const events = [
 		'channelCreate',

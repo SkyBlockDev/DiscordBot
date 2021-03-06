@@ -8,7 +8,7 @@ import {
 } from 'discord.js-light';
 import { Cprefixes } from '../index';
 module.exports = {
-	catagory: 'mod',
+	catagory: 'general',
 	async execute(
 		msg: Message,
 		client: Client,
