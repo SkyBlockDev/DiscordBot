@@ -1,6 +1,6 @@
 /** Imports */
 import { credentials, settings, google } from './Settings';
-import { readdirSync } from 'fs';
+import { readdirSync, mkdir } from 'fs';
 import { join } from 'path';
 import {
 	Client,
@@ -13,7 +13,6 @@ import Enmap from 'enmap';
 /** ----------------------- */
 /** defining stuff */
 const commands = new Collection();
-let command: string;
 let usr: User;
 let memb: GuildMember;
 /** ----------------------- */
@@ -51,26 +50,36 @@ for (const file of commandFiles) {
 /** Loading Listeners */
 const listeners = require('./events');
 listeners.execute(client);
+
+/** Getting the commands */
+const cmds = [
+	commands.get('config'),
+	commands.get('dev'),
+	commands.get('index'),
+	commands.get('general'),
+];
 /* --------------------------------
 Command Handler
 -------------------------------- */
-
 client.on('message', async (message: Message) => {
-	/** Checking Prefix */
-	if (
-		!message.content.startsWith(`<@${client.user.id}>`) &&
-		!settings.prefix &&
-		!'pixelbot'
-	)
-		return;
-	if (message.guild.me.hasPermission('SEND_MESSAGES')) return;
-
-	/** Command Defining */
-	let command = message.content;
+	/** Ignoring Bots */
+	if (message.author.bot) return;
 	/** Getting Prefix */
 	const prefix = Cprefixes.get(message.guild.id, 'prefix')
 		? Cprefixes.get(message.guild.id, 'prefix')
 		: settings.prefix;
+	/** Checking Prefix */
+	if (
+		!message.content.startsWith(`<@!${client.user.id}>`) &&
+		!message.content.startsWith(prefix)
+	)
+		return;
+
+	if (message.guild.me.hasPermission('SEND_MESSAGES')) return;
+
+	/** Command Defining */
+	let command = message.content;
+
 	/** Stuff */
 	if (command.startsWith(`<@!${client.user.id}>`)) {
 		command = command.replace(`<@!${client.user.id}>`, '');
@@ -99,12 +108,6 @@ client.on('message', async (message: Message) => {
 	} catch (e) {}
 	/** running the command */
 	try {
-		const cmds = [
-			await commands.get('config'),
-			await commands.get('dev'),
-			await commands.get('index'),
-			await commands.get('general'),
-		];
 		console.log(command);
 		for (let commandFiles of cmds) {
 			(commandFiles as CommandInterface).execute(
