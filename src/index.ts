@@ -1,5 +1,5 @@
 /** Imports */
-import { credentials, settings, google } from './Settings';
+import { credentials, settings } from './Settings';
 import { readdirSync, mkdir, existsSync } from 'fs';
 import { join } from 'path';
 import {
@@ -70,6 +70,7 @@ Command Handler
 client.on('message', async (message: Message) => {
 	/** Ignoring Bots */
 	if (message.author.bot) return;
+	if (message.guild.me.hasPermission('SEND_MESSAGES')) return;
 	/** Getting Prefix */
 	const prefix = Cprefixes.get(message.guild.id, 'prefix')
 		? Cprefixes.get(message.guild.id, 'prefix')
@@ -80,8 +81,6 @@ client.on('message', async (message: Message) => {
 		!message.content.startsWith(prefix)
 	)
 		return;
-
-	if (message.guild.me.hasPermission('SEND_MESSAGES')) return;
 
 	/** Command Defining */
 	let command = message.content;
@@ -219,7 +218,7 @@ interface CommandInterface {
 		usr: User,
 		memb: GuildMember,
 		prefix: string
-	);
+	): Function;
 }
 /* --------------------------------
 Events

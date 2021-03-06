@@ -3,3 +3,4 @@ node_modules/*
 Settings.ts
 dist/*
 yarn-error.log
+DATABASE/*
