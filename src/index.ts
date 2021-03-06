@@ -1,6 +1,6 @@
 /** Imports */
 import { credentials, settings, google } from './Settings';
-import { readdirSync, mkdir } from 'fs';
+import { readdirSync, mkdir, existsSync } from 'fs';
 import { join } from 'path';
 import {
 	Client,
@@ -16,6 +16,12 @@ const commands = new Collection();
 let usr: User;
 let memb: GuildMember;
 /** ----------------------- */
+/** DataBase Directory */
+if (!existsSync('./DATABASE')) {
+	mkdir('./DATABASE', (MONKEY) => {
+		console.log('MADE DATABASE DIRECTORY');
+	});
+}
 /** DataBase */
 export const Cprefixes = new Enmap({
 	name: 'prefixes',
