@@ -15,7 +15,8 @@ module.exports = {
 		args: string,
 		cmd: string,
 		user: User,
-		member: GuildMember
+		member: GuildMember,
+		prefix: string
 	) {
 		const channel = msg.channel as TextChannel;
 		const guild = msg.guild as Guild;
@@ -24,8 +25,7 @@ module.exports = {
 				prefix: '',
 			});
 			if (!args) {
-				const item = Cprefixes.get(guild.id, 'prefix');
-				if (item) return channel.send('my prefix is ' + item || '!');
+				return channel.send('my prefix is ' + prefix);
 			} else {
 				if (!msg.member.permissions.has('ADMINISTRATOR'))
 					return channel.send(

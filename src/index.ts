@@ -65,12 +65,13 @@ client.on('message', async (message: Message) => {
 		return;
 	if (message.guild.me.hasPermission('SEND_MESSAGES')) return;
 
-	/** Command defining */
+	/** Command Defining */
 	let command = message.content;
+	/** Getting Prefix */
 	const prefix = Cprefixes.get(message.guild.id, 'prefix')
 		? Cprefixes.get(message.guild.id, 'prefix')
 		: settings.prefix;
-	console.log(prefix);
+	/** Stuff */
 	if (command.startsWith(`<@!${client.user.id}>`)) {
 		command = command.replace(`<@!${client.user.id}>`, '');
 	} else if (command.startsWith(prefix)) {
@@ -112,7 +113,8 @@ client.on('message', async (message: Message) => {
 				args,
 				command,
 				usr || null,
-				memb || null
+				memb || null,
+				prefix
 			);
 		}
 	} catch (e) {
@@ -206,7 +208,8 @@ interface CommandInterface {
 		args: string,
 		command: string,
 		usr: User,
-		memb: GuildMember
+		memb: GuildMember,
+		prefix: string
 	);
 }
 /* --------------------------------
