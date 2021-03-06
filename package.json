@@ -2,7 +2,7 @@
 	"name": "dlight",
 	"version": "1.0.0",
 	"description": "",
-	"main": "index.js",
+	"main": "dist/index.js",
 	"scripts": {
 		"start": "tsc && node ./dist/index.js",
 		"dev": "nodemon -e ts --exec \"yarn start\"",
