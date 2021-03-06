@@ -6,7 +6,6 @@ import {
 	Guild,
 	TextChannel,
 } from 'discord.js-light';
-import { Cprefixes } from '../index';
 module.exports = {
 	catagory: 'dev',
 	async execute(
@@ -19,8 +18,10 @@ module.exports = {
 	) {
 		const channel = msg.channel as TextChannel;
 		const guild = msg.guild as Guild;
-		if (cmd == 'eval') {
-			msg.reply(await eval(args));
+		if (msg.author.id == '336465356304678913') {
+			if (cmd == 'eval') {
+				msg.reply(await eval(args));
+			}
 		}
 	},
 };

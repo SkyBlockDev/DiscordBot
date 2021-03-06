@@ -3,7 +3,7 @@
         "alwaysStrict": false,
         "noImplicitAny": false,
         "noImplicitThis": false,
-        "strict": false,
+        "strict": true,
         "strictBindCallApply": false,
         "strictFunctionTypes": false,
         "strictNullChecks": false,

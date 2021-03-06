@@ -5,6 +5,7 @@ import {
 	GuildMember,
 	Guild,
 	TextChannel,
+	MessageEmbed,
 } from 'discord.js-light';
 import { Cprefixes } from '../index';
 module.exports = {
@@ -15,12 +16,19 @@ module.exports = {
 		args: string,
 		cmd: string,
 		user: User,
-		member: GuildMember
+		member: GuildMember,
+		prefix: string
 	) {
+		const send = msg.channel.send;
 		const channel = msg.channel as TextChannel;
 		const guild = msg.guild as Guild;
-		if (cmd == 'eval') {
-			msg.reply(await eval(args));
+		console.log(cmd == 'avatar');
+		if (cmd == 'avatar') {
+			const embed = new MessageEmbed()
+				.setTitle(`${member}'s Avatar`)
+				.setURL(member.user.displayAvatarURL({ dynamic: true }))
+				.setImage(member.user.displayAvatarURL({ dynamic: true }));
+			send(embed);
 		}
 	},
 };

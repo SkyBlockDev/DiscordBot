@@ -18,6 +18,7 @@ module.exports = {
 		member: GuildMember,
 		prefix: string
 	) {
+		const send = msg.channel.send;
 		const channel = msg.channel as TextChannel;
 		const guild = msg.guild as Guild;
 		if (cmd == 'prefix') {
@@ -34,8 +35,6 @@ module.exports = {
 				Cprefixes.set(guild.id, args, 'prefix');
 				msg.channel.send('Updated the prefix to ' + args);
 			}
-		} else {
-			console.log('NOOOO');
 		}
 	},
 };

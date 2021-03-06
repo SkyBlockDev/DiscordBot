@@ -51,19 +51,20 @@ const commandFiles = readdirSync(join(__dirname, 'commands')).filter((file) =>
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	commands.set(command?.catagory, command);
+	console.log(command?.catagory);
 }
+/** Getting the commands */
+const cmds = [
+	commands.get('config'),
+	commands.get('dev'),
+	commands.get('general'),
+	commands.get('mod'),
+];
 
 /** Loading Listeners */
 const listeners = require('./events');
 listeners.execute(client);
 
-/** Getting the commands */
-const cmds = [
-	commands.get('config'),
-	commands.get('dev'),
-	commands.get('index'),
-	commands.get('general'),
-];
 /* --------------------------------
 Command Handler
 -------------------------------- */
@@ -210,6 +211,7 @@ async function Member(args: string, msg: Message) {
 Command Interface
 -------------------------------- */
 interface CommandInterface {
+	catagory: string;
 	execute(
 		message: Message,
 		client: Client,
